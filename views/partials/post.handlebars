@@ -1,0 +1,47 @@
+{{! Partial for a single post }}
+<div class="post">
+    <div class="post-avatar">
+        <!-- the user's avatar -->
+        <img src="{{user.avatar_url}}" alt="{{user.username}}'s Avatar">
+    </div>
+    <div class="post-content preserve-newlines">
+        <!-- the post -->
+        <h3>{{title}}</h3>
+        <p>{{content}}</p>
+        <div class="post-status-bar">
+            <span class="like-button" data-id="{{id}}" onclick="handleLikeClick(event)">♥</span>
+            <span class="like-count">{{likes}} Likes</span>
+            <span class="post-details">Posted by {{username}} on {{timestamp}}</span>
+            {{#ifCond username ../user.username}}
+                <button class="delete-button" data-id="{{id}}" onclick="handleDeleteClick(event)"><i class="fas fa-trash-alt"></i></button>
+            {{/ifCond}}
+        </div>        
+    </div>
+</div>
+<script>
+
+    function handleLikeClick(event) {
+        const postId = event.target.getAttribute('data-id');
+        // you might want to "fetch" something... 
+        fetch(`/like/${postId}`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });       
+    }
+
+    function handleDeleteClick(event) {
+        const buttonElement = event.target.closest('.delete-button');
+        const postId = buttonElement.getAttribute('data-id');        
+        // you might want to "fetch" something...        
+        fetch(`/delete/${postId}`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+    }    
+</script>
